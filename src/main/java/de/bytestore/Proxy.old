@@ -1,0 +1,89 @@
+package de.bytestore;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.Scanner;
+
+public class Proxy {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+
+        // Store Socket for Client.
+        DatagramSocket inputIO = new DatagramSocket(new InetSocketAddress("0.0.0.0", 9987));
+
+        // Store Socket for Server.
+        DatagramSocket outputIO = new DatagramSocket();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Accept incoming Client.
+                while (true) {
+                    try {
+                        // Print Debug Message.
+                        System.out.println("Waiting for Client to connect.");
+
+                        // Buffer Datagram Paket to Read.
+                        DatagramPacket packetIO = new DatagramPacket(new byte[1024], 1024);
+
+                        // Receive Paket from Client.
+                        inputIO.receive(packetIO);
+
+                        // Print Log of Paket.
+                        logPaket(packetIO);
+
+                        // Prepare UDP Paket for Server.
+                        packetIO.setAddress(InetAddress.getByName("85.214.126.187"));
+                        packetIO.setPort(9987);
+
+                        // Send Paket to Server.
+                        outputIO.send(packetIO);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // Accept incoming Client.
+                while (true) {
+                    try {
+                        // Print Debug Message.
+                        System.out.println("Waiting for Server to connect.");
+
+                        // Buffer Datagram Paket to Read.
+                        DatagramPacket packetIO = new DatagramPacket(new byte[1024], 1024);
+
+                        // Receive Paket from Client.
+                        outputIO.receive(packetIO);
+
+                        // Print Log of Paket.
+                        logPaket(packetIO);
+
+                        // Send Paket to Server.
+                        inputIO.send(packetIO);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+
+        // Close Sockets.
+        inputIO.close();
+        outputIO.close();
+    }
+
+    private static void logPaket(DatagramPacket packetIO) {
+        System.out.println("---------------------------------------");
+        System.out.println("Received new Paket:");
+        System.out.println(new String(packetIO.getData(), packetIO.getOffset(), packetIO.getLength()));
+        System.out.println("---------------------------------------");
+    }
+}
