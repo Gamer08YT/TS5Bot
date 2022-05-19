@@ -20,3 +20,14 @@ public static String userIO = "CHANGEME WITHOUT @ and :server";
 For getting these Credentials you can use following Tool:
 
 - [TeamSpeak5 Extractor](https://github.com/Gamer08YT/TS5Extractor)
+
+## Available Commands
+- bc (Broadcast)
+- flip (Ascii Message Art)
+- lenny (Ascii Message Art)
+- shrug (Ascii Message Art)
+- unflip (Ascii Message Art)
+- gif (Random Gif)
+- fake (Join TeamSpeak Server with Alpha Version)
+- list (List Members in Group/Room)
+- search (Search something in the TeamSpeak Forum)
